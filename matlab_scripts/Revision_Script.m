@@ -106,43 +106,109 @@ for k=Remove_position'
     % Find all channels with the correspoding name
     idx_neighbors = strfind(gates{k,3},'Number_Neighbors');
     idx_touching = strfind(gates{k,3},'Percent_Touching');
+    idx_area = strfind(gates{k,3},'Area');
+    
     % Select the position (only one! HARDCODED)
     Position_neighbors = find(~cellfun(@isempty,idx_neighbors));
     Position_touching = find(~cellfun(@isempty,idx_touching));
+    Position_area = find(~cellfun(@isempty,idx_area));
     
     % Calculate mean and std for amount neighbors
     Neighbor_results_mean(1,k) = mean(sessionData(gates{k,2},Position_neighbors));
     Neighbor_results_std(1,k) = std(sessionData(gates{k,2},Position_neighbors));
-    % Calculate mean and std for amount neighbors
+    
+    % Calculate mean and std for percent touching
     Touching_results_mean(1,k) = mean(sessionData(gates{k,2},Position_touching));
     Touching_results_std(1,k) = std(sessionData(gates{k,2},Position_touching));
+    
+    % Calculate mean and std for area
+    Area_results_mean(1,k) = mean(sessionData(gates{k,2},Position_area));
+    Area_results_std(1,k) = std(sessionData(gates{k,2},Position_area));
     
     Amount_cells(1,k)= size(gates{k,2},2);
 end
 
 % Remove zeros (since some images could be missing (SVCA vs. histoCAT)
-Neighbor_results_mean(Neighbor_results_mean==0)=[];
+Neighbor_results_mean(Neighbor_results_mean)=[];
 Neighbor_results_std(Neighbor_results_std==0)=[];
 Touching_results_mean(Touching_results_mean==0)=[];
 Touching_results_std(Touching_results_std==0)=[];
+Area_results_mean(Area_results_mean==0)=[];
+Area_results_std(Area_results_std==0)=[];
+
 Amount_cells(Amount_cells==0)=[];
 
 %% (8) Visualize results - Play around!
 % Visualize and calculate
 neighorsVScellcellall= [Neighbor_results_mean;table2array(Results_mean)];
 scatter(neighorsVScellcellall(1,:),neighorsVScellcellall(2,:));
+title('Neighbors vs. SVCA Cell-Cell signature')
+ylabel('Cell-Cell interactions explained - average over all markers')
+xlabel('Average amount of neighbors')
 
 figure()
 touchingVScellcellall= [Touching_results_mean;table2array(Results_mean)];
 scatter(touchingVScellcellall(1,:),touchingVScellcellall(2,:));
+title('Touching vs. SVCA Cell-Cell signature')
+ylabel('Cell-Cell interactions explained - average over all markers')
+xlabel('Average amount of percent touching')
 
 figure()
 amountVScellcellall= [Amount_cells;table2array(Results_mean)];
 scatter(amountVScellcellall(1,:),amountVScellcellall(2,:));
+title('Amount cells vs. SVCA Cell-Cell signature')
+ylabel('Cell-Cell interactions explained - average over all markers')
+xlabel('Amount of cells')
+
+figure()
+areaVScellcellall= [Area_results_mean;table2array(Results_mean)];
+scatter(areaVScellcellall(1,:),areaVScellcellall(2,:));
+title('Area vs. SVCA Cell-Cell signature')
+ylabel('Cell-Cell interactions explained - average over all markers')
+xlabel('Average Area')
+
+figure()
+neighorsamountVScellcellall = [(Amount_cells./Neighbor_results_mean);table2array(Results_mean)];
+scatter(neighorsamountVScellcellall(1,:),neighorsamountVScellcellall(2,:));
+title('Cell for each present neighbor vs. SVCA Cell-Cell signature')
+ylabel('Cell-Cell interactions explained - average over all markers')
+xlabel('Cells for each present neighbor')
 
 figure()
 neighorsVScellcelltop5 = [Neighbor_results_mean;Save_mean_top5];
 scatter(neighorsVScellcelltop5(1,:),neighorsVScellcelltop5(2,:));
+title('Neighbors vs. TOP5 SVCA Cell-Cell signature')
+ylabel('Cell-Cell interactions explained - average over TOP5 markers')
+xlabel('Average amount of neighbors')
+
+figure()
+touchingVScellcelltop5 = [Touching_results_mean;Save_mean_top5];
+scatter(touchingVScellcelltop5(1,:),touchingVScellcelltop5(2,:));
+title('Touching vs. TOP5 SVCA Cell-Cell signature')
+ylabel('Cell-Cell interactions explained - average over TOP5 markers')
+xlabel('Average amount of percent touching')
+
+figure()
+amountVScellcelltop5 = [Amount_cells;Save_mean_top5];
+scatter(amountVScellcelltop5(1,:),amountVScellcelltop5(2,:));
+title('Amount cells vs. TOP5 SVCA Cell-Cell signature')
+ylabel('Cell-Cell interactions explained - average over TOP5 markers')
+xlabel('Amount of cells')
+
+figure()
+areaVScellcelltop5= [Area_results_mean;Save_mean_top5];
+scatter(areaVScellcelltop5(1,:),areaVScellcelltop5(2,:));
+title('Area vs. TOP5 SVCA Cell-Cell signature')
+ylabel('Cell-Cell interactions explained - average over TOP5 markers')
+xlabel('Average Area')
+
+figure()
+neighorsamountVScellcellall = [(Amount_cells./Neighbor_results_mean);Save_mean_top5];
+scatter(neighorsamountVScellcellall(1,:),neighorsamountVScellcellall(2,:));
+title('Cell for each present neighbor vs. SVCA Cell-Cell signature')
+ylabel('Cell-Cell interactions explained - average over TOP5 markers')
+xlabel('Cells for each present neighbor')
+
 hold on
 
 p = polyfit(neighorsVScellcelltop5(1,:),neighorsVScellcelltop5(2,:),1);
