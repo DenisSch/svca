@@ -98,6 +98,7 @@ Neighbor_results_std = [];
 Touching_results_mean = [];
 Touching_results_std = [];
 Amount_cells = [];
+Position_PG = [];
 
 % Get average+std amount neighbors and percent touching
 for k=Remove_position'
@@ -107,11 +108,17 @@ for k=Remove_position'
     idx_neighbors = strfind(gates{k,3},'Number_Neighbors');
     idx_touching = strfind(gates{k,3},'Percent_Touching');
     idx_area = strfind(gates{k,3},'Area');
+    idx_PG =  strfind(gates{k,3},'Phenograph');
     
     % Select the position (only one! HARDCODED)
     Position_neighbors = find(~cellfun(@isempty,idx_neighbors));
     Position_touching = find(~cellfun(@isempty,idx_touching));
     Position_area = find(~cellfun(@isempty,idx_area));
+    
+    % Get the PG cluster's
+    Position_PG = find(~cellfun(@isempty,idx_PG));
+    Get_all_cluster = sessionData(gates{k,2},Position_PG);
+    Get_cluster_7(1,k) = numel(find(Get_all_cluster==7))+1;
     
     % Calculate mean and std for amount neighbors
     Neighbor_results_mean(1,k) = mean(sessionData(gates{k,2},Position_neighbors));
@@ -129,12 +136,13 @@ for k=Remove_position'
 end
 
 % Remove zeros (since some images could be missing (SVCA vs. histoCAT)
-Neighbor_results_mean(Neighbor_results_mean)=[];
+Neighbor_results_mean(Neighbor_results_mean==0)=[];
 Neighbor_results_std(Neighbor_results_std==0)=[];
 Touching_results_mean(Touching_results_mean==0)=[];
 Touching_results_std(Touching_results_std==0)=[];
 Area_results_mean(Area_results_mean==0)=[];
 Area_results_std(Area_results_std==0)=[];
+
 
 Amount_cells(Amount_cells==0)=[];
 
@@ -215,3 +223,17 @@ p = polyfit(neighorsVScellcelltop5(1,:),neighorsVScellcelltop5(2,:),1);
 f = polyval(p,neighorsVScellcelltop5(1,:));
 plot(neighorsVScellcelltop5(1,:),neighorsVScellcelltop5(2,:),'o',...
     neighorsVScellcelltop5(1,:),f,'-')
+
+% (9) Check for cluster 7 in PhenoGraph and its distribiution compared to
+% the SVCA signature
+
+% Remove not used images
+Get_cluster_7_cut=Get_cluster_7(:,Remove_position);
+
+figure()
+PG7VScellcellall = [Get_cluster_7_cut;Save_mean_top5];
+scatter(PG7VScellcellall(1,:),PG7VScellcellall(2,:));
+title('Immune cell cluster 7 vs. SVCA Cell-Cell signature')
+ylabel('Cell-Cell interactions explained - average over TOP5 markers')
+xlabel('Amount immune cell cluster 7')
+
