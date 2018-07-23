@@ -326,5 +326,5 @@ Get_all_cluster_cut = [];
     CSV_Output = array2table(All_Readouts,'RowNames',Row_names,'VariableNames',gates(Remove_position,1))
     
     % Create CSV file
-    writetable(CSV_Output,'CSV_Output.csv','Delimiter',',');
+    writetable(CSV_Output,'CSV_Output.csv','Delimiter',',','WriteRowNames',true);
 
