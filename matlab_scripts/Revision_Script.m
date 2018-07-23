@@ -1,5 +1,6 @@
 % Run through all clusters
-for p = 1:29
+Get_all_cluster_cut = [];
+ for p = 1:29
     %% Denis Schapiro - Bodenmiller Lab - University of Zurich
     
     % Load SVCA output and visualize connection betweeen cell-cell
@@ -29,7 +30,7 @@ for p = 1:29
     Split_Image_Names = {};
     Cell_Cell_All = [];
     Remove_position = [];
-    
+
     % Cluster_number for images:
     cluster_number = p;
     
@@ -155,13 +156,13 @@ for p = 1:29
     
     Amount_cells(Amount_cells==0)=[];
     
-    % %% (8) Visualize results - Play around!
-    % % Visualize and calculate
-    % neighorsVScellcellall= [Neighbor_results_mean;table2array(Results_mean)];
-    % scatter(neighorsVScellcellall(1,:),neighorsVScellcellall(2,:));
-    % title('Neighbors vs. SVCA Cell-Cell signature')
-    % ylabel('Cell-Cell interactions explained - average over all markers')
-    % xlabel('Average amount of neighbors')
+    %% (8) Visualize results - Play around!
+%     % Visualize and calculate
+%     neighorsVScellcellall= [Neighbor_results_mean;table2array(Results_mean)];
+%     scatter(neighorsVScellcellall(1,:),neighorsVScellcellall(2,:),[],);
+%     title('Neighbors vs. SVCA Cell-Cell signature')
+%     ylabel('Cell-Cell interactions explained - average over all markers')
+%     xlabel('Average amount of neighbors')
     %
     % figure()
     % touchingVScellcellall= [Touching_results_mean;table2array(Results_mean)];
@@ -237,51 +238,93 @@ for p = 1:29
     
     % Remove not used images
     Get_cluster_7_cut=Get_cluster_7(:,Remove_position);
+    Get_all_cluster_cut = [Get_all_cluster_cut;Get_cluster_7_cut];
     
-    % Creat figure for amount
-    h = figure()
-    PG7VScellcellall = [Get_cluster_7_cut;Save_mean_top5];
-    scatter(PG7VScellcellall(1,:),PG7VScellcellall(2,:));
-    title(strcat('Cell cluster ', num2str(cluster_number), ' vs. SVCA Cell-Cell signature'));
-    ylabel('Cell-Cell interactions explained - average over TOP5 markers')
-    xlabel(strcat('Amount cell cluster',num2str(cluster_number)))
-    % Calculate correlations
-    [Amount_all_R,Amount_all_P] = corrcoef(PG7VScellcellall(1,:),PG7VScellcellall(2,:));
-    % Plot R value and P value on figure
-    text(0.8, 0.9, strcat('R value: ',num2str(Amount_all_R(1,2))), ...
-        'Units', 'normalized', ...
-        'HorizontalAlignment', 'left', ...
-        'VerticalAlignment', 'top');
+%     % Creat figure for amount
+%     h = figure()
+%     PG7VScellcellall = [Get_cluster_7_cut;Save_mean_top5];
+%     scatter(PG7VScellcellall(1,:),PG7VScellcellall(2,:));
+%     title(strcat('Cell cluster ', num2str(cluster_number), ' vs. SVCA Cell-Cell signature'));
+%     ylabel('Cell-Cell interactions explained - average over TOP5 markers')
+%     xlabel(strcat('Amount cell cluster',num2str(cluster_number)))
+%     % Calculate correlations
+%     [Amount_all_R,Amount_all_P] = corrcoef(PG7VScellcellall(1,:),PG7VScellcellall(2,:));
+%     % Plot R value and P value on figure
+%     text(0.8, 0.9, strcat('R value: ',num2str(Amount_all_R(1,2))), ...
+%         'Units', 'normalized', ...
+%         'HorizontalAlignment', 'left', ...
+%         'VerticalAlignment', 'top');
+%     
+%     text(0.8, 0.8, strcat('P value: ',num2str(Amount_all_P(1,2))), ...
+%         'Units', 'normalized', ...
+%         'HorizontalAlignment', 'left', ...
+%         'VerticalAlignment', 'top');
+%     
+%     % Save figure
+%     savefig(h,strcat('PGCluster',num2str(cluster_number),'.fig'));
+%     print(strcat('PGCluster',num2str(cluster_number)),'-dtiffn');
+%     
+%     % Create figure for percentage
+%     g = figure()
+%     PG7_Per_VScellcellall = [Get_cluster_7_cut./Amount_cells;Save_mean_top5];
+%     scatter(PG7_Per_VScellcellall(1,:),PG7_Per_VScellcellall(2,:));
+%     title(strcat('Percentage cell cluster ', num2str(cluster_number), ' vs. SVCA Cell-Cell signature'));
+%     ylabel('Cell-Cell interactions explained - average over TOP5 markers')
+%     xlabel(strcat('Percentage cell cluster',num2str(cluster_number)))
+%     % Calculate correlations
+%     [Percentage_all_R,Percentage_all_P] = corrcoef(PG7_Per_VScellcellall(1,:),PG7_Per_VScellcellall(2,:));
+%     % Plot R value and P value on figure
+%     text(0.8, 0.9, strcat('R value: ',num2str(Percentage_all_R(1,2))), ...
+%         'Units', 'normalized', ...
+%         'HorizontalAlignment', 'left', ...
+%         'VerticalAlignment', 'top');
+%     
+%     text(0.8, 0.8, strcat('P value: ',num2str(Percentage_all_P(1,2))), ...
+%         'Units', 'normalized', ...
+%         'HorizontalAlignment', 'left', ...
+%         'VerticalAlignment', 'top');
+%     % Save figure
+%     savefig(g,strcat('Percentage_PGCluster',num2str(cluster_number),'.fig'));
+%     print(strcat('Percentage_PGCluster',num2str(cluster_number)),'-dtiffn');
+%     
+%         %% (8) Visualize results - Play around!
+%     % Visualize and calculate
+%     neighorsVScellcellall= [Neighbor_results_mean;table2array(Results_mean)];
+%     scatter(neighorsVScellcellall(1,:),neighorsVScellcellall(2,:),[],PG7_Per_VScellcellall(1,:));
+%         % Calculate correlations
+%     [R,P] = corrcoef(neighorsVScellcellall(1,:),neighorsVScellcellall(2,:));
+%     % Plot R value and P value on figure
+%     text(0.6, 0.9, strcat('R value: ',num2str(R(1,2))), ...
+%         'Units', 'normalized', ...
+%         'HorizontalAlignment', 'left', ...
+%         'VerticalAlignment', 'top');
+%     text(0.6, 0.8, strcat('P value: ',num2str(P(1,2))), ...
+%         'Units', 'normalized', ...
+%         'HorizontalAlignment', 'left', ...
+%         'VerticalAlignment', 'top');
+%     title('Neighbors vs. SVCA Cell-Cell signature')
+%     ylabel('Cell-Cell interactions explained - average over all markers')
+%     xlabel('Average amount of neighbors')
+ end
+
+%% (10) Save as CSV for Damien
+    % Save all readouts (Careful - Order HARDCODED!!!)
+    All_Readouts = [table2array(Results_mean);table2array(Results_std);...
+        Neighbor_results_mean;Neighbor_results_std;...
+        Touching_results_mean;Touching_results_std;...
+        Amount_cells;Area_results_mean(Remove_position);...
+        Area_results_std(Remove_position);...
+        Save_mean_top5;Save_std_top5;Get_all_cluster_cut];
     
-    text(0.8, 0.8, strcat('P value: ',num2str(Amount_all_P(1,2))), ...
-        'Units', 'normalized', ...
-        'HorizontalAlignment', 'left', ...
-        'VerticalAlignment', 'top');
+    % Create string for row
+    Row_names = {'Results_mean','Results_std','Neighbor_results_mean',...
+        'Neighbor_results_std','Touching_results_mean','Touching_results_std',...
+        'Amount_cells','Area_results_mean','Area_results_std','Save_mean_top5',...
+        'Save_std_top5',gates{53:end,1}};
     
-    % Save figure
-    savefig(h,strcat('PGCluster',num2str(cluster_number),'.fig'));
-    print(strcat('PGCluster',num2str(cluster_number)),'-dtiffn');
+    % Create table
+    CSV_Output = array2table(All_Readouts,'RowNames',Row_names,'VariableNames',gates(Remove_position,1))
     
-    % Create figure for percentage
-    g = figure()
-    PG7_Per_VScellcellall = [Get_cluster_7_cut./Amount_cells;Save_mean_top5];
-    scatter(PG7_Per_VScellcellall(1,:),PG7_Per_VScellcellall(2,:));
-    title(strcat('Percentage cell cluster ', num2str(cluster_number), ' vs. SVCA Cell-Cell signature'));
-    ylabel('Cell-Cell interactions explained - average over TOP5 markers')
-    xlabel(strcat('Percentage cell cluster',num2str(cluster_number)))
-    % Calculate correlations
-    [Percentage_all_R,Percentage_all_P] = corrcoef(PG7_Per_VScellcellall(1,:),PG7_Per_VScellcellall(2,:));
-    % Plot R value and P value on figure
-    text(0.8, 0.9, strcat('R value: ',num2str(Percentage_all_R(1,2))), ...
-        'Units', 'normalized', ...
-        'HorizontalAlignment', 'left', ...
-        'VerticalAlignment', 'top');
-    
-    text(0.8, 0.8, strcat('P value: ',num2str(Percentage_all_P(1,2))), ...
-        'Units', 'normalized', ...
-        'HorizontalAlignment', 'left', ...
-        'VerticalAlignment', 'top');
-    % Save figure
-    savefig(g,strcat('Percentage_PGCluster',num2str(cluster_number),'.fig'));
-    print(strcat('Percentage_PGCluster',num2str(cluster_number)),'-dtiffn');
-end
+    % Create CSV file
+    writetable(CSV_Output,'CSV_Output.csv','Delimiter',',');
+
